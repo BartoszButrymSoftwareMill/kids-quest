@@ -79,7 +79,14 @@ export function RegisterForm({ redirectTo = '/dashboard' }: RegisterFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {error && <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">{error}</div>}
+      {error && (
+        <div
+          className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"
+          data-testid="error-message"
+        >
+          {error}
+        </div>
+      )}
 
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-2">
@@ -87,6 +94,7 @@ export function RegisterForm({ redirectTo = '/dashboard' }: RegisterFormProps) {
         </label>
         <input
           id="email"
+          name="email"
           type="email"
           required
           value={email}
@@ -103,6 +111,7 @@ export function RegisterForm({ redirectTo = '/dashboard' }: RegisterFormProps) {
         </label>
         <input
           id="password"
+          name="password"
           type="password"
           required
           minLength={6}
@@ -121,6 +130,7 @@ export function RegisterForm({ redirectTo = '/dashboard' }: RegisterFormProps) {
         </label>
         <input
           id="confirmPassword"
+          name="confirmPassword"
           type="password"
           required
           minLength={6}

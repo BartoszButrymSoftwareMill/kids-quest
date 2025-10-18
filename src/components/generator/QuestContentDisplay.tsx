@@ -26,11 +26,13 @@ export function QuestContentDisplay({ quest, ageGroup, props }: QuestContentDisp
     <div className="space-y-6 max-w-3xl mx-auto">
       {/* Title */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-neutral-900">{quest.title}</h2>
+        <h2 className="text-2xl font-bold text-neutral-900" data-testid="quest-title">
+          {quest.title}
+        </h2>
       </div>
 
       {/* Hook Section */}
-      <div className="bg-primary/10 border-l-4 border-primary p-5 rounded-r-lg">
+      <div className="bg-primary/10 border-l-4 border-primary p-5 rounded-r-lg" data-testid="quest-hook">
         <h3 className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">Hook</h3>
         <p className="text-lg text-neutral-900 leading-relaxed">{quest.hook}</p>
       </div>
@@ -40,7 +42,7 @@ export function QuestContentDisplay({ quest, ageGroup, props }: QuestContentDisp
         <h3 className="text-lg font-semibold text-neutral-900">Kroki</h3>
         <ol className="space-y-3">
           {[quest.step1, quest.step2, quest.step3].map((step, index) => (
-            <li key={index} className="flex gap-3">
+            <li key={index} className="flex gap-3" data-testid={`quest-step${index + 1}`}>
               <span className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
                 {index + 1}
               </span>
@@ -54,13 +56,13 @@ export function QuestContentDisplay({ quest, ageGroup, props }: QuestContentDisp
       {(quest.easier_version || quest.harder_version) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {quest.easier_version && (
-            <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+            <div className="bg-green-50 border border-green-200 p-4 rounded-lg" data-testid="easier-version">
               <h3 className="text-sm font-semibold text-green-900 mb-2">🟢 Wersja łatwiej</h3>
               <p className="text-sm text-green-800">{quest.easier_version}</p>
             </div>
           )}
           {quest.harder_version && (
-            <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
+            <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg" data-testid="harder-version">
               <h3 className="text-sm font-semibold text-orange-900 mb-2">🔴 Wersja trudniej</h3>
               <p className="text-sm text-orange-800">{quest.harder_version}</p>
             </div>
@@ -90,13 +92,22 @@ export function QuestContentDisplay({ quest, ageGroup, props }: QuestContentDisp
           <span className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 text-neutral-900 rounded-full text-sm">
             👶 {ageGroup.label}
           </span>
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 text-neutral-900 rounded-full text-sm">
+          <span
+            className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 text-neutral-900 rounded-full text-sm"
+            data-testid="quest-duration"
+          >
             ⏱️ {quest.duration_minutes} min
           </span>
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 text-neutral-900 rounded-full text-sm">
+          <span
+            className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 text-neutral-900 rounded-full text-sm"
+            data-testid="quest-location"
+          >
             📍 {locationLabel}
           </span>
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 text-neutral-900 rounded-full text-sm">
+          <span
+            className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-100 text-neutral-900 rounded-full text-sm"
+            data-testid="quest-energy"
+          >
             ⚡ {energyLevelLabel}
           </span>
           {selectedProps.map((prop) => (

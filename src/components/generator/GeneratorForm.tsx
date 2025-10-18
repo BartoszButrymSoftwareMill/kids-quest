@@ -68,6 +68,7 @@ export function GeneratorForm({ initialValues, ageGroups, props, onSubmit, isLoa
         onChange={(value) => setValue('age_group_id', value as number)}
         error={errors.age_group_id?.message}
         required
+        data-testid="age-group-selector"
       />
 
       {/* Duration Slider */}
@@ -76,6 +77,7 @@ export function GeneratorForm({ initialValues, ageGroups, props, onSubmit, isLoa
         onChange={(value) => setValue('duration_minutes', value)}
         error={errors.duration_minutes?.message}
         required
+        data-testid="duration-slider"
       />
 
       {/* Location Picker */}
@@ -86,6 +88,7 @@ export function GeneratorForm({ initialValues, ageGroups, props, onSubmit, isLoa
         onChange={(value) => setValue('location', value)}
         error={errors.location?.message}
         required
+        data-testid="location-picker"
       />
 
       {/* Energy Level Picker */}
@@ -96,6 +99,7 @@ export function GeneratorForm({ initialValues, ageGroups, props, onSubmit, isLoa
         onChange={(value) => setValue('energy_level', value as EnergyLevel)}
         error={errors.energy_level?.message}
         required
+        data-testid="energy-level-picker"
       />
 
       {/* Props Multi-Select */}

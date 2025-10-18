@@ -111,7 +111,7 @@ export class ContentSafetyService {
         return caseSensitive ? text.includes(pattern) : text.toLowerCase().includes(pattern.toLowerCase());
 
       case 'wildcard': {
-        const regexPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\%/g, '.*');
+        const regexPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/%/g, '.*');
         return new RegExp(regexPattern, flags).test(text);
       }
 
@@ -142,7 +142,7 @@ export class ContentSafetyService {
       }
 
       case 'wildcard': {
-        const wildcardPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\%/g, '.*');
+        const wildcardPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/%/g, '.*');
         return text.replace(new RegExp(wildcardPattern, flags), replacement);
       }
 

@@ -25,9 +25,12 @@ export function ErrorState({ error, onRetry, onBackToForm, canRetry }: ErrorStat
   const canRetryNow = canRetry && (countdown === null || countdown <= 0);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] gap-6 max-w-md mx-auto px-4">
+    <div
+      className="flex flex-col items-center justify-center min-h-[400px] gap-6 max-w-md mx-auto px-4"
+      data-testid="error-state"
+    >
       {/* Error Alert */}
-      <div className="w-full rounded-lg border border-red-200 bg-red-50 p-6">
+      <div className="w-full rounded-lg border border-red-200 bg-red-50 p-6" data-testid="error-message">
         <div className="flex items-start gap-3">
           <svg
             className="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5"

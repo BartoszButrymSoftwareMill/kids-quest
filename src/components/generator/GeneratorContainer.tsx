@@ -118,9 +118,9 @@ export function GeneratorContainer({ profile, ageGroups, props }: GeneratorConta
     };
 
     try {
-      await saveQuest(questToSave);
-      // Navigate to dashboard
-      window.location.href = '/dashboard';
+      const savedQuest = await saveQuest(questToSave);
+      // Navigate to quest detail page
+      window.location.href = `/dashboard/quest/${savedQuest.id}`;
     } catch {
       alert('Nie udało się zapisać questa. Spróbuj ponownie.');
       setSaving(false);

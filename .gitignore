@@ -16,6 +16,7 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.env.test
 
 # macOS-specific files
 .DS_Store
@@ -27,3 +28,7 @@ pnpm-debug.log*
 .supabase/
 .env.local
 .env*.local
+
+# Playwright
+playwright-report/
+test-results/

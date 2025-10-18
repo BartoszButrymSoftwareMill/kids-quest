@@ -10,7 +10,12 @@ export function useGeneratorState(
 ) {
   const [state, setState] = useState<GeneratorContainerState>(() => {
     // Load saved form data from localStorage during initialization
-    const savedForm = localStorage.getItem(STORAGE_KEYS.GENERATOR_FORM);
+    // Check if we're on the client side before accessing localStorage
+    let savedForm: string | null = null;
+    if (typeof window !== 'undefined') {
+      savedForm = localStorage.getItem(STORAGE_KEYS.GENERATOR_FORM);
+    }
+
     let formData = getInitialFormData(initialProfile);
 
     if (savedForm) {
@@ -36,7 +41,7 @@ export function useGeneratorState(
 
   // Save form data to localStorage on change
   useEffect(() => {
-    if (state.formData) {
+    if (typeof window !== 'undefined' && state.formData) {
       localStorage.setItem(STORAGE_KEYS.GENERATOR_FORM, JSON.stringify(state.formData));
     }
   }, [state.formData]);
@@ -67,16 +72,18 @@ export function useGeneratorState(
     }));
 
     // Save last params for "regenerate"
-    localStorage.setItem(
-      STORAGE_KEYS.LAST_PARAMS,
-      JSON.stringify({
-        age_group_id: quest.age_group_id,
-        duration_minutes: quest.duration_minutes,
-        location: quest.location,
-        energy_level: quest.energy_level,
-        prop_ids: quest.prop_ids,
-      })
-    );
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(
+        STORAGE_KEYS.LAST_PARAMS,
+        JSON.stringify({
+          age_group_id: quest.age_group_id,
+          duration_minutes: quest.duration_minutes,
+          location: quest.location,
+          energy_level: quest.energy_level,
+          prop_ids: quest.prop_ids,
+        })
+      );
+    }
   }, []);
 
   const setError = useCallback((error: ApiError) => {

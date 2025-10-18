@@ -15,6 +15,11 @@ class RateLimiter {
    * Returns allowed status and retry-after time if blocked
    */
   async checkLimit(userId: string, config: RateLimitConfig): Promise<{ allowed: boolean; retryAfter?: number }> {
+    // Disable rate limiting in test environment
+    if (process.env.NODE_ENV === 'test' || process.env.DISABLE_RATE_LIMIT === 'true') {
+      return { allowed: true };
+    }
+
     const now = Date.now();
     const windowStart = now - config.windowMs;
 

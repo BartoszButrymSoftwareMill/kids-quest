@@ -8,6 +8,7 @@ interface VisualPickerProps<T extends string | number> {
   error?: string;
   required?: boolean;
   tooltip?: string;
+  'data-testid'?: string;
 }
 
 export function VisualPicker<T extends string | number>({
@@ -18,9 +19,10 @@ export function VisualPicker<T extends string | number>({
   error,
   required = false,
   tooltip,
+  'data-testid': dataTestId,
 }: VisualPickerProps<T>) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" data-testid={dataTestId}>
       {/* Label */}
       <div className="flex items-center gap-2">
         <label className="text-sm font-medium text-neutral-900">
@@ -43,6 +45,16 @@ export function VisualPicker<T extends string | number>({
               key={String(option.value)}
               type="button"
               onClick={() => onChange(option.value)}
+              data-value={option.value}
+              data-testid={
+                dataTestId
+                  ? dataTestId === 'location-picker'
+                    ? `location-${option.value}`
+                    : dataTestId === 'energy-level-picker'
+                      ? `energy-${option.value}`
+                      : `${dataTestId}-${option.value}`
+                  : undefined
+              }
               className={`
                 relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all
                 min-h-[80px] hover:border-primary/50 hover:bg-primary/5

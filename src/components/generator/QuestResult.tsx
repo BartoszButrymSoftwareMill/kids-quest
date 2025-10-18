@@ -35,7 +35,7 @@ export function QuestResult({
   }
 
   return (
-    <div className="space-y-8 py-8">
+    <div className="space-y-8 py-8" data-testid="quest-result">
       {/* Quest Content */}
       <QuestContentDisplay quest={quest} ageGroup={ageGroup} props={props} />
 

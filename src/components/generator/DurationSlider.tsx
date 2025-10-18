@@ -3,13 +3,20 @@ interface DurationSliderProps {
   onChange: (value: number) => void;
   error?: string;
   required?: boolean;
+  'data-testid'?: string;
 }
 
 const PRESET_VALUES = [5, 15, 30, 60];
 
-export function DurationSlider({ value, onChange, error, required = false }: DurationSliderProps) {
+export function DurationSlider({
+  value,
+  onChange,
+  error,
+  required = false,
+  'data-testid': dataTestId,
+}: DurationSliderProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid={dataTestId}>
       {/* Label */}
       <label className="text-sm font-medium text-neutral-900">
         Czas trwania
@@ -32,6 +39,7 @@ export function DurationSlider({ value, onChange, error, required = false }: Dur
           onChange={(e) => onChange(Number(e.target.value))}
           className="w-full h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer slider-thumb"
           aria-label="Czas trwania w minutach"
+          data-testid={dataTestId ? `${dataTestId}-input` : undefined}
         />
       </div>
 

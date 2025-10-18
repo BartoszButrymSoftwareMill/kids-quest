@@ -1,0 +1,53 @@
+{
+  "validQuest": {
+    "title": "Poszukiwanie skarbów w ogrodzie",
+    "hook": "W ogrodzie ukryte są magiczne skarby czekające na odkrycie!",
+    "step1": "Znajdź 5 kamieni i ułóż z nich ścieżkę",
+    "step2": "Poszukaj czegoś zielonego pod dużym drzewem",
+    "step3": "Zakończ przygodę tańcem radości!",
+    "easier_version": "Znajdź tylko 3 kamienie zamiast 5",
+    "harder_version": "Znajdź 7 kamieni i ułóż z nich kształt gwiazdy",
+    "safety_notes": "Upewnij się, że kamienie nie są zbyt ciężkie. Zawsze bądź w zasięgu wzroku opiekuna.",
+    "age_group_id": 1,
+    "duration_minutes": 30,
+    "location": "outdoor",
+    "energy_level": "medium",
+    "prop_ids": [1, 2],
+    "source": "ai"
+  },
+  "validQuestHome": {
+    "title": "Magiczna kuchnia",
+    "hook": "Dzisiaj będziemy magicznymi kucharzami!",
+    "step1": "Znajdź 3 różne kolorowe miski",
+    "step2": "Udawaj, że przygotowujesz czarodziejską zupę",
+    "step3": "Zaproś pluszaki na uroczystą kolację",
+    "easier_version": null,
+    "harder_version": "Stwórz menu z 3 dań dla swoich gości",
+    "safety_notes": null,
+    "age_group_id": 2,
+    "duration_minutes": 20,
+    "location": "home",
+    "energy_level": "low",
+    "prop_ids": [],
+    "source": "manual"
+  },
+  "generateQuestRequest": {
+    "age_group_id": 3,
+    "duration_minutes": 45,
+    "location": "outdoor",
+    "energy_level": "high",
+    "prop_ids": [1, 3, 5],
+    "app_version": "0.0.1"
+  },
+  "aiGeneratedResponse": {
+    "title": "Wyprawa na szczyt góry",
+    "hook": "Dzisiaj wcielamy się w odważnych zdobywców górskich szczytów!",
+    "step1": "Znajdź najwyższe miejsce w pobliżu i zaplanuj trasę wspinaczki",
+    "step2": "Zbierz po drodze \"zapasy\" - liście, patyki, kamienie",
+    "step3": "Na szczycie zasadź flagę zwycięstwa i świętuj sukces",
+    "easier_version": "Znajdź niższe miejsce, np. pagórek lub schodki",
+    "harder_version": "Stwórz mapę swojej wyprawy i oznacz przeszkody",
+    "safety_notes": "Wspinaj się tylko na bezpieczne miejsca. Zawsze miej dorosłego w pobliżu."
+  }
+}
+

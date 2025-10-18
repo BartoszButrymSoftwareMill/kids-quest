@@ -1,0 +1,20 @@
+{
+  "validUser": {
+    "email": "test@example.com",
+    "password": "SecurePass123!"
+  },
+  "anotherUser": {
+    "email": "another@example.com",
+    "password": "AnotherPass123!"
+  },
+  "invalidEmail": {
+    "email": "invalid-email",
+    "password": "SecurePass123!"
+  },
+  "weakPassword": {
+    "email": "test@example.com",
+    "password": "123"
+  },
+  "testUserId": "550e8400-e29b-41d4-a716-446655440000"
+}
+
