@@ -1,0 +1,52 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { LogoutButton } from '../components/auth/LogoutButton';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Dashboard | KidsQuest', description } = Astro.props;
+
+// Verify user is authenticated
+const supabase = Astro.locals.supabase;
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+// If not logged in, redirect to login page with current path as redirect parameter
+if (!user) {
+  return Astro.redirect(`/login?redirect=${Astro.url.pathname}`);
+}
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="min-h-screen bg-neutral-50">
+    <!-- Top Navigation -->
+    <header class="bg-white border-b border-neutral-200">
+      <div class="container mx-auto px-4 py-4">
+        <nav class="flex items-center justify-between">
+          <a href="/dashboard" class="text-2xl font-bold text-primary"> KidsQuest </a>
+          <div class="flex items-center gap-4">
+            <a href="/dashboard" class="px-4 py-2 text-neutral-700 hover:text-primary transition-colors">
+              Moje questy
+            </a>
+            <a
+              href="/dashboard/generate"
+              class="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            >
+              Generuj quest
+            </a>
+            <LogoutButton client:load />
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-8">
+      <slot />
+    </main>
+  </div>
+</BaseLayout>

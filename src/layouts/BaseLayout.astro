@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+import { LogoutButton } from '../components/auth/LogoutButton';
+
+interface Props {
+  title?: string;
+  description?: string;
+  showNav?: boolean;
+}
+
+const { title = 'KidsQuest', description = 'Twórz i odkrywaj zabawy dla dzieci', showNav = false } = Astro.props;
+
+// Check if user is authenticated
+const supabase = Astro.locals.supabase;
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    {
+      showNav && (
+        <header class="bg-white border-b border-neutral-200">
+          <div class="container mx-auto px-4 py-4">
+            <nav class="flex items-center justify-between">
+              <a href="/" class="text-2xl font-bold text-blue-600">
+                KidsQuest
+              </a>
+              <div class="flex items-center gap-4">
+                {user ? (
+                  <>
+                    <a href="/dashboard" class="px-4 py-2 text-neutral-700 hover:text-blue-600 transition-colors">
+                      Mój panel
+                    </a>
+                    <LogoutButton client:load />
+                  </>
+                ) : (
+                  <>
+                    <a href="/login" class="px-4 py-2 text-neutral-700 hover:text-blue-600 transition-colors">
+                      Zaloguj się
+                    </a>
+                    <a
+                      href="/register"
+                      class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                    >
+                      Zarejestruj się
+                    </a>
+                  </>
+                )}
+              </div>
+            </nav>
+          </div>
+        </header>
+      )
+    }
+    <slot />
+  </body>
+</html>

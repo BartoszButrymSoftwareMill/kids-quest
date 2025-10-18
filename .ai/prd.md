@@ -18,7 +18,7 @@ Cele biznesowe i produktowe (MVP):
 - Udział AI ≥ 75%: co najmniej 75% rozpoczętych questów pochodzi z generatora AI (vs questy manualne).
 - Zero incydentów hard‑ban w treściach.
 
-Grupa docelowa: rodzice/opiekunowie dzieci w wieku 3–10 lat; przedziały: 3–4, 5–6, 7–8, 8–9, 10 lat.
+Grupa docelowa: rodzice/opiekunowie dzieci w wieku 3–10 lat; przedziały: 3–4, 5–6, 7–8, 9–10 lat.
 
 ## 2. Problem użytkownika
 
@@ -28,7 +28,7 @@ Rodzice/opiekunowie często nie mają pod ręką krótkich, kreatywnych i bezpie
 
 3.1 Generowanie questów (AI)
 
-- Formularz parametrów: wiek (3–4, 5–6, 7–8, 8–9, 10), czas (domyślnie 30 min), miejsce (dom/dwór – tylko bezpieczne), poziom energii (niska/średnia/wysoka), rekwizyty (klocki, rysowanie, kartka+ołówek, storytelling, zagadki, samochodziki, bez rekwizytów).
+- Formularz parametrów: wiek (3–4, 5–6, 7–8, 9–10), czas (domyślnie 30 min), miejsce (dom/dwór – tylko bezpieczne), poziom energii (niska/średnia/wysoka), rekwizyty (klocki, rysowanie, kartka+ołówek, storytelling, zagadki, samochodziki, bez rekwizytów).
 - Defaulty i presety: ustawienia domyślne + szybkie presety (np. „5 min bez rekwizytów”, „15 min rysowanie”, „30 min klocki”).
 - Silnik treści: zapewnia zgodność z polityką bezpieczeństwa (hard‑ban/soft‑ban, zamienniki, reguły fizyczne, konflikt vs wiek) oraz formatem językowym (PL, hak + 3 kroki + wariant łatwiej/trudniej, krótkie zdania, kooperacja > rywalizacja).
 - Struktura outputu: tytuł (opcjonalnie), hak, Kroki 1–3, Wersja łatwiej, Wersja trudniej, Adnotacje bezpieczeństwa, znacznik kategorii (czas, miejsce, rekwizyty, energia, widełki wieku).

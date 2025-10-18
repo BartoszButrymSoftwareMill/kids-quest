@@ -1,0 +1,63 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { GeneratorContainer } from '../../components/generator/GeneratorContainer';
+
+// Note: Authentication is handled by DashboardLayout
+
+// Fetch profile
+let profile = null;
+try {
+  const profileRes = await fetch(`${Astro.url.origin}/api/profiles/me`, {
+    headers: { Cookie: Astro.request.headers.get('Cookie') || '' },
+  });
+  if (profileRes.ok) {
+    profile = await profileRes.json();
+  }
+} catch (error) {
+  console.error('Error fetching profile:', error);
+}
+
+// Fetch age groups
+let ageGroups = [];
+try {
+  const ageGroupsRes = await fetch(`${Astro.url.origin}/api/age-groups`);
+  if (ageGroupsRes.ok) {
+    const data = await ageGroupsRes.json();
+    ageGroups = data.age_groups;
+  }
+} catch (error) {
+  console.error('Error fetching age groups:', error);
+  // This is critical - cannot proceed without age groups
+  return new Response('Unable to load age groups', { status: 500 });
+}
+
+// Fetch props
+let props = [];
+try {
+  const propsRes = await fetch(`${Astro.url.origin}/api/props`);
+  if (propsRes.ok) {
+    const data = await propsRes.json();
+    props = data.props;
+  }
+} catch (error) {
+  console.error('Error fetching props:', error);
+  // This is critical - cannot proceed without props
+  return new Response('Unable to load props', { status: 500 });
+}
+---
+
+<DashboardLayout
+  title="Generuj quest | KidsQuest"
+  description="Wygeneruj spersonalizowaną zabawę dla swojego dziecka przy pomocy AI"
+>
+  <div class="container mx-auto px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-neutral-900 mb-2">Generuj quest</h1>
+        <p class="text-lg text-neutral-600">Stwórz spersonalizowaną zabawę dla swojego dziecka w kilka sekund</p>
+      </div>
+
+      <GeneratorContainer profile={profile} ageGroups={ageGroups} props={props} client:load />
+    </div>
+  </div>
+</DashboardLayout>

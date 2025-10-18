@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { TelemetryService } from '../../lib/telemetry-service';
+
+// This page handles OAuth callbacks from providers like Google
+// Supabase automatically exchanges the code for a session and sets cookies via @supabase/ssr
+
+const supabase = Astro.locals.supabase;
+
+// Get the session - cookies are automatically set by @supabase/ssr middleware
+const {
+  data: { session },
+  error,
+} = await supabase.auth.getSession();
+
+// If there's an error or no session, redirect to login with error
+if (error || !session) {
+  console.error('OAuth callback error:', error);
+  return Astro.redirect('/login?error=oauth_failed');
+}
+
+// Get user details to check if this is a new signup or existing login
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  console.error('OAuth callback: no user found despite having session');
+  return Astro.redirect('/login?error=oauth_failed');
+}
+
+// Cookies are automatically set by @supabase/ssr via setAll() during OAuth exchange
+// No manual cookie management needed - follows Supabase Auth best practices
+
+// Track OAuth authentication event (telemetry)
+const telemetry = new TelemetryService(supabase);
+try {
+  // Check if user was created recently (within last 10 seconds) to determine signup vs login
+  const createdAt = new Date(user.created_at);
+  const now = new Date();
+  const isNewUser = now.getTime() - createdAt.getTime() < 10000; // 10 seconds
+
+  if (isNewUser) {
+    await telemetry.trackAuthSignup(user.id, 'google', false);
+    console.info('OAuth signup successful:', { userId: user.id, email: user.email });
+  } else {
+    await telemetry.trackAuthLogin(user.id, 'google');
+    console.info('OAuth login successful:', { userId: user.id, email: user.email });
+  }
+} catch (telemetryError) {
+  // Non-fatal: log but don't fail the OAuth flow
+  console.error('Failed to track OAuth event:', telemetryError);
+}
+
+// Redirect to dashboard
+return Astro.redirect('/dashboard');
+---
+
+<BaseLayout title="Przekierowanie | KidsQuest" description="Przekierowanie do aplikacji">
+  <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="text-neutral-600">Przekierowujemy Cię do aplikacji...</p>
+    </div>
+  </div>
+</BaseLayout>
