@@ -61,6 +61,9 @@ export default tseslint.config(
   baseConfig,
   jsxA11yConfig,
   reactConfig,
-  eslintPluginAstro.configs['flat/recommended'],
-  eslintPluginPrettier
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    ...eslintPluginPrettier,
+  },
+  eslintPluginAstro.configs['flat/recommended']
 );
