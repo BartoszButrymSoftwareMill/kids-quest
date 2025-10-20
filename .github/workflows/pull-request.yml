@@ -84,15 +84,6 @@ jobs:
       - name: Run E2E tests
         run: npm run test:e2e
 
-      - name: Upload E2E test coverage
-        uses: codecov/codecov-action@v5
-        if: always()
-        with:
-          files: ./coverage/coverage-final.json
-          flags: e2e
-          name: e2e-tests
-          fail_ci_if_error: false
-
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: always()
