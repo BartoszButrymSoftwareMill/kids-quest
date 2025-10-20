@@ -61,10 +61,10 @@ jobs:
     env:
       PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
       PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       E2E_USERNAME_ID: ${{ secrets.E2E_USERNAME_ID }}
       E2E_USERNAME: ${{ secrets.E2E_USERNAME }}
       E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
-      DISABLE_RATE_LIMIT: 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

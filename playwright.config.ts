@@ -48,8 +48,5 @@ export default defineConfig({
     timeout: 180 * 1000, // Increase to 3 minutes for webserver startup
     stdout: 'pipe',
     stderr: 'pipe',
-    env: {
-      DISABLE_RATE_LIMIT: 'true', // Disable rate limiting for e2e tests
-    },
   },
 });

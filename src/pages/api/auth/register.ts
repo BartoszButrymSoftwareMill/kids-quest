@@ -120,12 +120,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // No manual cookie management needed - follows Supabase Auth best practices
 
     // Track auth_signup event (telemetry)
-    const telemetry = new TelemetryService(locals.supabase);
-    try {
-      await telemetry.trackAuthSignup(data.user.id, 'email', !data.session);
-    } catch (telemetryError) {
-      // Non-fatal: log but don't fail the registration
-      console.error('Failed to track auth_signup event:', telemetryError);
+    // Only track if user has a session (i.e., email confirmation is disabled)
+    // If email confirmation is enabled, user won't have a session yet and RLS will block the insert
+    if (data.session) {
+      const telemetry = new TelemetryService(locals.supabase);
+      try {
+        await telemetry.trackAuthSignup(data.user.id, 'email', !data.session);
+      } catch (telemetryError) {
+        // Non-fatal: log but don't fail the registration
+        console.error('Failed to track auth_signup event:', telemetryError);
+      }
     }
 
     console.info('Registration successful:', {

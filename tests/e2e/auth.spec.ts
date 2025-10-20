@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { registerAndConfirmUser } from '../helpers/playwright-helpers';
 
 test.describe('Authentication Flow', () => {
   const testPassword = 'SecurePass123!';
@@ -28,7 +29,8 @@ test.describe('Authentication Flow', () => {
     await page.goto('/register', { waitUntil: 'networkidle' });
 
     // Use unique email for each test run
-    const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substring(7)}@example.com`;
+    // Using mailinator.com domain which is a real domain that accepts all emails
+    const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substring(7)}@mailinator.com`;
 
     // Wait for form to be ready and fill registration form
     await page.waitForSelector('input[name="email"]', { state: 'visible' });
@@ -48,31 +50,31 @@ test.describe('Authentication Flow', () => {
     if (!response.ok) {
       console.error('Registration failed:', responseData);
     }
+    expect(response.ok()).toBeTruthy();
 
-    // Should show success message or redirect
-    // Depending on email confirmation settings
-    await page.waitForURL(/\/(dashboard|login)/, { timeout: 30000 });
+    // Handle both cases: with and without email confirmation
+    // Wait for either email confirmation message or redirect to dashboard
+    const emailConfirmationVisible = await page
+      .locator('[data-testid="email-confirmation-message"]')
+      .isVisible()
+      .catch(() => false);
+
+    if (emailConfirmationVisible) {
+      // Email confirmation is required - verify message is shown
+      const confirmationMessage = page.locator('[data-testid="email-confirmation-message"]');
+      await expect(confirmationMessage).toBeVisible({ timeout: 10000 });
+      await expect(confirmationMessage).toContainText('Sprawdź swoją skrzynkę email');
+      console.log('✓ Email confirmation required - message displayed');
+    } else {
+      // No email confirmation - should redirect to dashboard
+      await page.waitForURL(/\/dashboard/, { timeout: 30000 });
+      console.log('✓ No email confirmation - redirected to dashboard');
+    }
   });
 
   test('should login with valid credentials', async ({ page }) => {
-    // First, ensure user exists by registering
-    await page.goto('/register', { waitUntil: 'networkidle' });
-
-    const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substring(7)}@example.com`;
-    await page.waitForSelector('input[name="email"]', { state: 'visible' });
-    await page.waitForTimeout(500);
-    await page.fill('input[name="email"]', uniqueEmail);
-    await page.fill('input[name="password"]', testPassword);
-    await page.fill('input[name="confirmPassword"]', testPassword);
-
-    // Wait for registration with proper timeout
-    await Promise.all([
-      page.waitForResponse((resp) => resp.url().includes('/api/auth/register'), { timeout: 30000 }),
-      page.click('button[type="submit"]'),
-    ]);
-
-    // Wait for registration to complete (redirect to dashboard)
-    await page.waitForURL('/dashboard', { timeout: 30000 });
+    // Register and confirm user automatically
+    const { email, password } = await registerAndConfirmUser(page, testPassword);
 
     // Logout to test login
     const logoutButton = page.locator('button:has-text("Wyloguj")');
@@ -83,8 +85,8 @@ test.describe('Authentication Flow', () => {
     await page.goto('/login', { waitUntil: 'networkidle' });
     await page.waitForSelector('input[name="email"]', { state: 'visible' });
     await page.waitForTimeout(500);
-    await page.fill('input[name="email"]', uniqueEmail);
-    await page.fill('input[name="password"]', testPassword);
+    await page.fill('input[name="email"]', email);
+    await page.fill('input[name="password"]', password);
     await page.click('button[type="submit"]');
 
     // Should redirect to dashboard
@@ -97,7 +99,7 @@ test.describe('Authentication Flow', () => {
 
     await page.waitForSelector('input[name="email"]', { state: 'visible' });
     await page.waitForTimeout(500);
-    await page.fill('input[name="email"]', 'nonexistent@example.com');
+    await page.fill('input[name="email"]', `nonexistent-${Date.now()}@mailinator.com`);
     await page.fill('input[name="password"]', 'wrongpassword');
     await page.click('button[type="submit"]');
 
@@ -108,29 +110,8 @@ test.describe('Authentication Flow', () => {
   });
 
   test('should logout authenticated user', async ({ page, context }) => {
-    // First register and login
-    const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substring(7)}@example.com`;
-    await page.goto('/register', { waitUntil: 'networkidle' });
-    await page.waitForSelector('input[name="email"]', { state: 'visible' });
-    await page.waitForTimeout(500);
-    await page.fill('input[name="email"]', uniqueEmail);
-    await page.fill('input[name="password"]', testPassword);
-    await page.fill('input[name="confirmPassword"]', testPassword);
-
-    // Wait for registration API call with increased timeout
-    const [response] = await Promise.all([
-      page.waitForResponse((resp) => resp.url().includes('/api/auth/register') && resp.status() === 201, {
-        timeout: 30000,
-      }),
-      page.click('button[type="submit"]'),
-    ]);
-
-    // Verify registration was successful
-    const responseData = await response.json();
-    expect(responseData.success).toBe(true);
-
-    // Wait for redirect to dashboard
-    await page.waitForURL('/dashboard', { timeout: 30000 });
+    // Register and confirm user automatically
+    await registerAndConfirmUser(page, testPassword);
 
     // Find and click logout button
     const logoutButton = page.locator('button:has-text("Wyloguj")');
@@ -151,7 +132,7 @@ test.describe('Authentication Flow', () => {
 
     await page.waitForSelector('input[name="email"]', { state: 'visible' });
     await page.waitForTimeout(500);
-    await page.fill('input[name="email"]', 'test@example.com');
+    await page.fill('input[name="email"]', `test-${Date.now()}@mailinator.com`);
     await page.fill('input[name="password"]', 'password123');
     await page.fill('input[name="confirmPassword"]', 'different123');
     await page.click('button[type="submit"]');
@@ -163,7 +144,9 @@ test.describe('Authentication Flow', () => {
   });
 
   test('should enforce rate limiting on login', async ({ page }) => {
-    const wrongEmail = `wrong-${Date.now()}@example.com`;
+    // Use same email for all attempts to trigger rate limiting
+    // Rate limit is 5 attempts per 15 minutes per email
+    const wrongEmail = `wrong-${Date.now()}@mailinator.com`;
 
     // Make 6 failed login attempts to trigger rate limiting
     for (let i = 0; i < 6; i++) {
@@ -207,24 +190,8 @@ test.describe('Authentication Flow', () => {
   });
 
   test('should persist session across page reloads', async ({ page }) => {
-    // First register and login
-    const uniqueEmail = `test-${Date.now()}-${Math.random().toString(36).substring(7)}@example.com`;
-    await page.goto('/register', { waitUntil: 'networkidle' });
-    await page.waitForSelector('input[name="email"]', { state: 'visible' });
-    await page.waitForTimeout(500);
-    await page.fill('input[name="email"]', uniqueEmail);
-    await page.fill('input[name="password"]', testPassword);
-    await page.fill('input[name="confirmPassword"]', testPassword);
-
-    await Promise.all([
-      page.waitForResponse((resp) => resp.url().includes('/api/auth/register') && resp.status() === 201, {
-        timeout: 30000,
-      }),
-      page.click('button[type="submit"]'),
-    ]);
-
-    // Wait for redirect to dashboard
-    await page.waitForURL('/dashboard', { timeout: 30000 });
+    // Register and confirm user automatically
+    await registerAndConfirmUser(page, testPassword);
 
     // Reload page
     await page.reload({ waitUntil: 'networkidle' });
