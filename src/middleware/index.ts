@@ -27,6 +27,11 @@ function isPublicPath(pathname: string): boolean {
     return true;
   }
 
+  // Allow static assets (CSS, JS, images, fonts)
+  if (pathname.startsWith('/_astro/') || pathname.startsWith('/favicon.')) {
+    return true;
+  }
+
   // Allow API routes except auth-protected ones
   if (pathname.startsWith('/api/') && !pathname.startsWith('/api/profiles') && !pathname.startsWith('/api/quests')) {
     return true;
