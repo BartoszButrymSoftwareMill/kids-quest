@@ -59,7 +59,7 @@ export function RegisterForm({ redirectTo = '/dashboard' }: RegisterFormProps) {
 
   if (success && needsConfirmation) {
     return (
-      <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
+      <div className="p-6 bg-green-50 border border-green-200 rounded-lg" data-testid="email-confirmation-message">
         <h3 className="text-lg font-semibold text-green-900 mb-2">Sprawdź swoją skrzynkę email</h3>
         <p className="text-green-700">
           Wysłaliśmy link aktywacyjny na adres <strong>{email}</strong>. Kliknij w link, aby aktywować konto.
@@ -70,7 +70,7 @@ export function RegisterForm({ redirectTo = '/dashboard' }: RegisterFormProps) {
 
   if (success) {
     return (
-      <div className="p-6 bg-green-50 border border-green-200 rounded-lg text-center">
+      <div className="p-6 bg-green-50 border border-green-200 rounded-lg text-center" data-testid="success-message">
         <h3 className="text-lg font-semibold text-green-900 mb-2">Konto utworzone!</h3>
         <p className="text-green-700">Przekierowujemy Cię do aplikacji...</p>
       </div>

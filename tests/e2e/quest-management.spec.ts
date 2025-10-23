@@ -4,6 +4,7 @@
  */
 
 import { test, expect, type Page } from '@playwright/test';
+import { registerAndConfirmUser } from '../helpers/playwright-helpers';
 
 // Mock quest response helper
 async function mockQuestGenerationAPI(page: Page) {
@@ -33,9 +34,7 @@ async function mockQuestGenerationAPI(page: Page) {
 
 test.describe('Quest Management Flow', () => {
   const testPassword = 'SecurePass123!';
-  // Shared user for all tests in this file to avoid rate limiting
-  const sharedEmail = `management-test-${Date.now()}-${Math.random().toString(36).substring(7)}@example.com`;
-  let isUserRegistered = false;
+  let sharedUser: { email: string; password: string } | null = null;
 
   // Configure to run tests serially for better isolation
   test.describe.configure({ mode: 'serial' });
@@ -45,24 +44,16 @@ test.describe('Quest Management Flow', () => {
     // Wait between tests (longer delay to avoid rate limiting)
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    if (!isUserRegistered) {
+    if (!sharedUser) {
       // Register user only once for all tests in this describe block
-      await page.goto('/register', { waitUntil: 'networkidle' });
-      await page.waitForSelector('input[name="email"]', { state: 'visible' });
-      await page.waitForTimeout(500);
-      await page.fill('input[name="email"]', sharedEmail);
-      await page.fill('input[name="password"]', testPassword);
-      await page.fill('input[name="confirmPassword"]', testPassword);
-      await page.click('button[type="submit"]');
-      await page.waitForURL(/\/(dashboard|login)/, { timeout: 30000 });
-      isUserRegistered = true;
+      sharedUser = await registerAndConfirmUser(page, testPassword);
     } else {
       // Login with existing user
       await page.goto('/login', { waitUntil: 'networkidle' });
       await page.waitForSelector('input[name="email"]', { state: 'visible' });
       await page.waitForTimeout(500);
-      await page.fill('input[name="email"]', sharedEmail);
-      await page.fill('input[name="password"]', testPassword);
+      await page.fill('input[name="email"]', sharedUser.email);
+      await page.fill('input[name="password"]', sharedUser.password);
       await page.click('button[type="submit"]');
       await page.waitForURL('/dashboard', { timeout: 30000 });
     }

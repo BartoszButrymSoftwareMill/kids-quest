@@ -217,7 +217,7 @@ OPENROUTER_API_KEY=your-openrouter-api-key
 
 # Dla testów E2E na produkcyjnym Supabase w chmurze (opcjonalnie)
 # Użytkownik testowy z dedykowanymi uprawnieniami
-E2E_USERNAME=test-user@example.com
+E2E_USERNAME=test-user@mailinator.com
 E2E_PASSWORD=your-secure-test-password
 ```
 
@@ -225,6 +225,7 @@ E2E_PASSWORD=your-secure-test-password
 - Testy jednostkowe używają mocków i nie wymagają prawdziwych kluczy API
 - `E2E_USERNAME` i `E2E_PASSWORD` są wymagane tylko jeśli testujesz na produkcyjnej instancji Supabase w chmurze
 - Dla lokalnego developmentu z `supabase start` te zmienne nie są potrzebne
+- **Ważne:** Testy używają domeny `@mailinator.com` ponieważ Supabase blokuje fake/test domeny jak `@example.com`
 
 ### Tworzenie dedykowanego użytkownika testowego (dla cloud Supabase)
 
@@ -233,23 +234,23 @@ Jeśli testujesz na produkcyjnej instancji Supabase:
 1. **Utwórz użytkownika testowego** w Supabase Dashboard:
    - Idź do Authentication > Users
    - Kliknij "Add user" > "Create new user"
-   - Email: `test-user@example.com` (lub inny)
+   - Email: `test-user@mailinator.com` (lub inna prawdziwa domena akceptująca wszystkie emaile)
    - Hasło: silne, bezpieczne hasło
    - Auto-confirm: włącz (aby ominąć weryfikację email)
 
 2. **Dodaj do `.env.test`**:
    ```bash
-   E2E_USERNAME=test-user@example.com
+   E2E_USERNAME=test-user@mailinator.com
    E2E_PASSWORD=your-secure-password
    ```
 
 3. **Global setup automatycznie zaloguje się** jako ten użytkownik przed uruchomieniem testów
 
 **Dlaczego to jest ważne?**
-- Testy E2E tworzą nowych użytkowników (test-*@example.com)
-- Dedykowany użytkownik testowy ma stałe ID i uprawnienia
-- Bezpieczniejsze niż używanie anonymous access w produkcji
-- Umożliwia cleanup danych testowych po zakończeniu testów
+- Testy E2E tworzą nowych użytkowników dynamicznie (test-*@mailinator.com)
+- Każdy test używa unikalnego emaila aby uniknąć konfliktów
+- Mailinator.com to publiczna domena testowa która przechodzi walidację Supabase
+- Dedykowany użytkownik testowy (E2E_USERNAME) nie jest wymagany dla większości testów, ale jest dostępny dla global setup
 
 ## Pisanie nowych testów
 
