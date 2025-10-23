@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { RegisterForm } from '../components/auth/RegisterForm';
+import { GoogleLoginButton } from '../components/auth/GoogleLoginButton';
+
+// Check if user is already logged in
+const supabase = Astro.locals.supabase;
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+// Get redirect parameter from URL
+const redirectTo = Astro.url.searchParams.get('redirect') || '/dashboard';
+
+// If logged in, redirect to destination
+if (user) {
+  return Astro.redirect(redirectTo);
+}
+---
+
+<BaseLayout title="Zarejestruj się | KidsQuest" description="Utwórz darmowe konto KidsQuest">
+  <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4">
+    <div class="max-w-md mx-auto">
+      <!-- Logo/Header -->
+      <div class="text-center mb-8">
+        <a href="/" class="text-3xl font-bold text-blue-600 inline-block mb-4"> KidsQuest </a>
+        <h1 class="text-2xl font-bold text-neutral-900 mb-2">Utwórz konto</h1>
+        <p class="text-neutral-600">Zacznij tworzyć zabawy dla swoich dzieci już dziś!</p>
+      </div>
+
+      <!-- Register Form Card -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 mb-6">
+        <!-- Google Login -->
+        <GoogleLoginButton client:load />
+
+        <!-- Divider -->
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-neutral-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-neutral-500">lub</span>
+          </div>
+        </div>
+
+        <!-- Email Registration -->
+        <RegisterForm client:load redirectTo={redirectTo} />
+      </div>
+
+      <!-- Login Link -->
+      <div class="text-center">
+        <p class="text-neutral-600">
+          Masz już konto?{' '}
+          <a href={`/login?redirect=${redirectTo}`} class="text-blue-600 font-semibold hover:underline">
+            Zaloguj się
+          </a>
+        </p>
+      </div>
+
+      <!-- Back to Home -->
+      <div class="text-center mt-8">
+        <a href="/" class="text-neutral-500 hover:text-neutral-700 text-sm"> ← Wróć do strony głównej </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

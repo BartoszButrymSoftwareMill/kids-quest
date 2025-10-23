@@ -7,7 +7,9 @@ A simple web application that generates safe, short activity scenarios ("quests"
 - [Project Description](#project-description)
 - [Tech Stack](#tech-stack)
 - [Getting Started Locally](#getting-started-locally)
+- [Database Setup](#database-setup)
 - [Available Scripts](#available-scripts)
+- [Deployment](#deployment)
 - [Project Scope](#project-scope)
 - [Project Status](#project-status)
 - [License](#license)
@@ -57,7 +59,7 @@ KidsQuest is an MVP (Minimum Viable Product) web application designed for Polish
 
 ### Development & Deployment
 - **GitHub Actions** - CI/CD pipelines
-- **DigitalOcean** - Application hosting with Docker
+- **Netlify** - Application hosting with Git-based deployment
 - **ESLint & Prettier** - Code quality and formatting
 - **Husky** - Git hooks for code quality
 
@@ -194,6 +196,123 @@ supabase stop
 - `npm run lint` - Run ESLint code analysis
 - `npm run lint:fix` - Fix ESLint issues automatically
 - `npm run format` - Format code with Prettier
+
+## Deployment
+
+### Hosting Platform: Netlify
+
+KidsQuest is deployed on **Netlify** using GitHub Actions for CI/CD.
+
+#### Deployment Pipeline
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+- **Pull Requests** (`.github/workflows/pull-request.yml`):
+  - Linting
+  - Unit tests with coverage
+  - Automated status comments
+
+- **Production Deployment** (`.github/workflows/master.yml`):
+  - Linting
+  - Unit tests with coverage
+  - Build
+  - Automated deployment to Netlify
+  - Status notifications
+
+Every push to `main` branch automatically triggers the full CI/CD pipeline and deploys to production.
+
+#### Quick Setup
+
+**1. Prerequisites:**
+- Netlify account and project created
+- GitHub repository with Actions enabled
+
+**2. Configure GitHub Secrets:**
+
+Add these secrets in GitHub repository settings (Settings > Secrets and variables > Actions):
+
+```
+PUBLIC_SUPABASE_URL          # Supabase project URL
+PUBLIC_SUPABASE_ANON_KEY     # Supabase public (anon) key
+OPENROUTER_API_KEY           # OpenRouter API key
+NETLIFY_SITE_ID              # Netlify site ID
+NETLIFY_AUTH_TOKEN           # Netlify personal access token
+```
+
+**3. Configure Netlify:**
+
+Add environment variables in Netlify dashboard (Site settings > Environment variables):
+
+```
+PUBLIC_SUPABASE_URL
+PUBLIC_SUPABASE_ANON_KEY
+OPENROUTER_API_KEY
+```
+
+**4. Deploy:**
+
+Push to `main` branch:
+```bash
+git push origin main
+```
+
+The GitHub Actions workflow will automatically build and deploy to Netlify.
+
+📄 **Detailed deployment guide**: [`.github/DEPLOYMENT.md`](.github/DEPLOYMENT.md)
+
+#### Technical Configuration
+
+**Adapter:**
+
+The project uses `@astrojs/netlify` adapter for SSR support:
+
+```javascript
+// astro.config.mjs
+import netlify from '@astrojs/netlify';
+
+export default defineConfig({
+  adapter: netlify(),
+  output: 'server'
+});
+```
+
+**Build Configuration:**
+
+Build settings are defined in `netlify.toml`:
+
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22.14.0"
+```
+
+#### Local Testing
+
+Test the production build locally:
+
+```bash
+npm run build
+npm run preview
+```
+
+#### Why Netlify?
+
+**Key Advantages:**
+- **Excellent Astro support** - Official adapter maintained by Astro core team
+- **Automatic preview deployments** - Every PR gets a unique preview URL
+- **Edge network** - Global CDN for fast content delivery
+- **Predictable pricing** - Clear $19/month Pro tier for commercial use
+
+**Pricing:**
+- **Starter (Free)**: 100 GB bandwidth - Non-commercial use only
+- **Pro ($19/month)**: 1 TB bandwidth - Commercial use allowed
+
+⚠️ **Important**: For commercial projects, the **Pro plan ($19/month) is required**.
+
+📄 **Full hosting analysis**: [`/.ai/hosting-analysis.md`](.ai/hosting-analysis.md)
 
 ## Project Scope
 
