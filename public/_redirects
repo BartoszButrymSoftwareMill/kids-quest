@@ -1,2 +1,4 @@
+/_astro/*  /_astro/:splat  200
+/favicon.svg  /favicon.svg  200
 /*    /.netlify/functions/ssr    200
 
