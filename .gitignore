@@ -27,6 +27,7 @@ pnpm-debug.log*
 
 # Supabase
 .supabase/
+supabase/.temp/
 .env.local
 .env*.local
 
