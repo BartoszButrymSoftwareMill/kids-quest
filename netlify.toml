@@ -1,6 +1,30 @@
 [build]
   command = "npm run build"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22.14.0"
 
+# Upewnij się, że _astro folder jest dostępny dla statycznych assetów
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Upewnij się, że pliki CSS mają prawidłowy MIME type
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Content-Type = "text/css"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Content-Type = "text/javascript"
+
+# Zapobiegaj redirectom dla assetów
+[[redirects]]
+  from = "/_astro/*"
+  to = "/_astro/:splat"
+  status = 200
+  force = false
